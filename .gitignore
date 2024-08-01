@@ -1,0 +1,46 @@
+# Archivos de configuración de usuario de Visual Studio
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Archivos binarios
+bin/
+obj/
+
+# Archivos de paquetes
+*.nupkg
+*.snupkg
+
+# Datos de base de datos locales
+*.db
+*.sqlite
+
+# Configuración de usuario específica
+appsettings.Development.json
+appsettings.Production.json
+appsettings.json
+
+# Archivos de compilación
+*.dll
+*.exe
+
+# Archivos de entorno
+.env
+
+# Directorios de build y carpetas de configuración de herramientas
+/.vscode/
+/node_modules/
+/out/
+
+# Archivos de paquetes
+*.nupkg
+*.snupkg
+
+# Cualquier archivo de log
+*.log
+
+# Archivos temporales
+*.tmp
+*.swp
