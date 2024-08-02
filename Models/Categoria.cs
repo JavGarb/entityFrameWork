@@ -1,14 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace appdotnet.Models;
 
 public class Categoria
 {
-    [Key]
+    // [Key]
     public Guid CategoriaId{ get; set; }
 
-     [Required]
-     [MaxLength(150)]
+    //  [Required]
+    //  [MaxLength(150)]
     public string Nombre { get; set; }
 
     
@@ -16,6 +17,7 @@ public class Categoria
 
     public int Peso { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Tarea> Tareas { get; set; }
     
 }

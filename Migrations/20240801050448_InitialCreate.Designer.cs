@@ -12,7 +12,7 @@ using appdotnet;
 namespace app_dotnet.Migrations
 {
     [DbContext(typeof(TareasContext))]
-    [Migration("20240801023359_InitialCreate")]
+    [Migration("20240801050448_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -32,7 +32,6 @@ namespace app_dotnet.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Nombre")
@@ -40,9 +39,26 @@ namespace app_dotnet.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<int>("Peso")
+                        .HasColumnType("integer");
+
                     b.HasKey("CategoriaId");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("Categoria", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            CategoriaId = new Guid("b0e000d3-f29c-4fed-8747-3bd0734f871e"),
+                            Nombre = "Pending",
+                            Peso = 20
+                        },
+                        new
+                        {
+                            CategoriaId = new Guid("b0e000d3-f29c-4fed-8747-3bd0734f8711"),
+                            Nombre = "Personal",
+                            Peso = 50
+                        });
                 });
 
             modelBuilder.Entity("appdotnet.Models.Tarea", b =>
@@ -55,7 +71,6 @@ namespace app_dotnet.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Descripcion")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("FechaCreacion")
@@ -73,16 +88,36 @@ namespace app_dotnet.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.ToTable("Tareas");
+                    b.ToTable("Tarea", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            TareaId = new Guid("b0e000d3-f29c-4fed-8747-3bd0734f8730"),
+                            CategoriaId = new Guid("b0e000d3-f29c-4fed-8747-3bd0734f871e"),
+                            FechaCreacion = new DateTime(2024, 8, 1, 5, 4, 47, 522, DateTimeKind.Utc).AddTicks(2665),
+                            PrioridadTarea = 1,
+                            Titulo = "Review public services pays"
+                        },
+                        new
+                        {
+                            TareaId = new Guid("b0e000d3-f29c-4fed-8747-3bd0734f8721"),
+                            CategoriaId = new Guid("b0e000d3-f29c-4fed-8747-3bd0734f8711"),
+                            FechaCreacion = new DateTime(2024, 8, 1, 5, 4, 47, 522, DateTimeKind.Utc).AddTicks(2670),
+                            PrioridadTarea = 0,
+                            Titulo = "Netflix movie end"
+                        });
                 });
 
             modelBuilder.Entity("appdotnet.Models.Tarea", b =>
                 {
-                    b.HasOne("appdotnet.Models.Categoria", null)
+                    b.HasOne("appdotnet.Models.Categoria", "Categoria")
                         .WithMany("Tareas")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Categoria");
                 });
 
             modelBuilder.Entity("appdotnet.Models.Categoria", b =>
