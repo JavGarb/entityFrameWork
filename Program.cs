@@ -21,17 +21,37 @@ app.MapGet("/dbconection", async ([FromServices] TareasContext dbContext) =>
     return Results.Ok("Base de datos: " + dbContext.Database.CanConnect());
 });
 
-app.MapGet("/api/tasks", async ([FromServices] TareasContext dbContext) =>
+// app.MapGet("/api/tasks", async ([FromServices] TareasContext dbContext) =>
+// {
+//     var tasks = await dbContext.Tareas.Include(p => p.Categoria).ToListAsync();
+//     return Results.Ok(tasks);
+// });
+
+app.MapGet("/api/tasks/{id:guid?}", async ([FromServices] TareasContext dbContext, Guid? id) =>
 {
-    var tasks = await dbContext.Tareas.Include(p => p.Categoria).ToListAsync();
-    return Results.Ok(tasks);
+    if (id.HasValue)
+    {
+        var tarea = await dbContext.Tareas.Include(t => t.Categoria).FirstOrDefaultAsync(t => t.TareaId == id.Value);
+
+        if (tarea == null)
+        {
+            return Results.NotFound($"Task id not found");
+        }
+        return Results.Ok(tarea);
+    }
+    else
+    {
+        var tasks = await dbContext.Tareas.Include(p => p.Categoria).ToListAsync();
+        return Results.Ok(tasks);
+    }
+
 });
 
 app.MapPost("/api/tasks", async ([FromServices] TareasContext dbContext, [FromBody] Tarea tarea) =>
 {
     tarea.TareaId = Guid.NewGuid();
     tarea.FechaCreacion = DateTime.UtcNow;
-    
+
     await dbContext.AddAsync(tarea);
     await dbContext.SaveChangesAsync();
 
