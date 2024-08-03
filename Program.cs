@@ -21,11 +21,6 @@ app.MapGet("/dbconection", async ([FromServices] TareasContext dbContext) =>
     return Results.Ok("Base de datos: " + dbContext.Database.CanConnect());
 });
 
-// app.MapGet("/api/tasks", async ([FromServices] TareasContext dbContext) =>
-// {
-//     var tasks = await dbContext.Tareas.Include(p => p.Categoria).ToListAsync();
-//     return Results.Ok(tasks);
-// });
 
 app.MapGet("/api/tasks/{id:guid?}", async ([FromServices] TareasContext dbContext, Guid? id) =>
 {
@@ -56,6 +51,43 @@ app.MapPost("/api/tasks", async ([FromServices] TareasContext dbContext, [FromBo
     await dbContext.SaveChangesAsync();
 
     return Results.Ok();
+});
+
+app.MapPut("/api/tasks/{id}", async ([FromServices] TareasContext dbContext, [FromBody] Tarea tarea, [FromRoute] Guid id) =>
+{
+    var tareaActual = dbContext.Tareas.Find(id);
+
+    if(tareaActual != null)
+    {
+        tareaActual.CategoriaId = tarea.CategoriaId;
+        tareaActual.Titulo = tarea.Titulo;
+        tareaActual.PrioridadTarea = tarea.PrioridadTarea;
+        tareaActual.Descripcion = tarea.Descripcion;
+
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok();
+    }
+    
+
+    return Results.NotFound();
+});
+
+app.MapDelete("/api/tasks/{id:Guid}", async ([FromServices] TareasContext dbContext, Guid id) =>
+{
+    var tareaActual = dbContext.Tareas.Find(id);
+
+    if(tareaActual != null)
+    {
+        dbContext.Remove(tareaActual);
+
+        await dbContext.SaveChangesAsync();
+
+        return Results.Ok();
+    }
+    
+    return Results.NotFound();
+
 });
 
 app.MapGet("/api/categories", async ([FromServices] TareasContext dbContext) =>
